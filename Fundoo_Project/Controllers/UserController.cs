@@ -1,7 +1,7 @@
-﻿
-using Business_Layer.Interface;
+﻿using Business_Layer.Interface;
 using Database_Layer.Model;
 using Microsoft.AspNetCore.Mvc;
+using Repository_Layer.Contex;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,15 +9,17 @@ using System.Threading.Tasks;
 
 namespace Fundoo_Project.Controllers
 {
-    [Route("api/[controller]")]
     [ApiController]
+    [Route("api/User")]
     public class UserController : ControllerBase
     {
         private readonly IUserBL userBL;
+        FundooContext fundoo;
         //Constructor
-        public UserController(IUserBL userBL)
+        public UserController(IUserBL userBL,FundooContext fundoo)
         {
             this.userBL = userBL;
+            this.fundoo = fundoo;
         }
         //Register a User
         [HttpPost("Register")]
@@ -25,15 +27,35 @@ namespace Fundoo_Project.Controllers
         {
             try
             {
-                var result = userBL.Registration(userRegistration);
-                if (result != null)
-                    return this.Ok(new { Success = true, message = "Registration successful", data = result });
-                else
-                    return this.BadRequest(new { Success = false, message = "Registration Unsuccessful" });
+                var getUserData = fundoo.UserTable.FirstOrDefault(u => u.Email == userRegistration.Email);
+                if (getUserData != null)
+                {
+                    return this.Ok(new { success = false, message = $"{userRegistration.Email} is Already Exists" });
+                }
+                this.userBL.Registration(userRegistration);
+                return this.Ok(new { success = true, message = $"Registration Successfull { userRegistration.Email}" });
+
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw;
+                throw ex;
+            }
+        }
+        //User Login
+        [HttpPost("Login")]
+        public IActionResult Login(UserLogin userLogin)
+        {
+            try
+            {
+                var user = userBL.LogIn(userLogin.Email, userLogin.Password);
+                if (user != null)
+                    return this.Ok(new { Success = true, message = "Logged In", data = user });
+                else
+                    return this.BadRequest(new { Success = false, message = "Enter Valid Email and Password" });
+            }
+            catch (Exception ex)
+            {
+                throw ex;
             }
         }
     }

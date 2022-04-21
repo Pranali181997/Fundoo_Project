@@ -10,8 +10,8 @@ using Repository_Layer.Contex;
 namespace Repository_Layer.Migrations
 {
     [DbContext(typeof(FundooContext))]
-    [Migration("20220419083212_UserTable")]
-    partial class UserTable
+    [Migration("20220421112432_UserTable1")]
+    partial class UserTable1
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -23,9 +23,9 @@ namespace Repository_Layer.Migrations
 
             modelBuilder.Entity("Repository_Layer.Entity.User", b =>
                 {
-                    b.Property<long>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                        .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<DateTime?>("CreatedAt")

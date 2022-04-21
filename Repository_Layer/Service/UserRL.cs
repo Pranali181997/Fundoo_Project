@@ -46,19 +46,18 @@ namespace Repository_Layer.Service
                 throw;
             }
         }
-
         //Validating Email And Password
-        public string Login(string email, string password)
+        public string LogIn(string email, string password)
         {
             try
             {
-                string encryptedString =password;
+                string encryptedString = password;
                 //if Email and password is empty return null. 
                 if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(password))
                     return null;
                 //Linq query matches given input in database and returns that entry from the database.
                 var result = fundooContext.UserTable.Where(x => x.Email == email && x.Password == encryptedString).FirstOrDefault();
-                var id = result.UserId;
+                var id = result.Id;
                 if (result != null)
                     //Calling Jwt Token Creation method and returning token.
                     return GenerateSecurityToken(result.Email, id);
@@ -89,7 +88,5 @@ namespace Repository_Layer.Service
               signingCredentials: credentials);
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
-
-
     }
 }

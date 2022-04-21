@@ -12,7 +12,6 @@ namespace Business_Layer.Service
     public class UserBL : IUserBL
     {
         private readonly IUserRL userRL;
-        //Constructor
         public UserBL(IUserRL userRL)
         {
             this.userRL = userRL;
@@ -27,6 +26,18 @@ namespace Business_Layer.Service
             catch (Exception)
             {
 
+                throw;
+            }
+        }
+        //User Login
+        public string LogIn(string email, string password)
+        {
+            try
+            {
+                return userRL.LogIn(email, password);
+            }
+            catch (Exception)
+            {
                 throw;
             }
         }
