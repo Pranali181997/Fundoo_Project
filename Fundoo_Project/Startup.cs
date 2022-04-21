@@ -88,7 +88,6 @@ namespace Fundoo_Project
                 {
                     endpoints.MapControllers();
                 });
-            }  
-        
+            }       
     }
 }
