@@ -33,7 +33,7 @@ namespace Repository_Layer.Service
                 newUser.FirstName = userRegist.FirstName;
                 newUser.LastName = userRegist.LastName;
                 newUser.Email = userRegist.Email;
-                newUser.Password =userRegist.Password;
+                newUser.Password = userRegist.Password;
                 fundooContext.UserTable.Add(newUser);
                 int result = fundooContext.SaveChanges();
                 if (result > 0)
@@ -87,6 +87,29 @@ namespace Repository_Layer.Service
               expires: DateTime.Now.AddMinutes(60),
               signingCredentials: credentials);
             return new JwtSecurityTokenHandler().WriteToken(token);
+        }
+        // User ForgotPasssword
+        public string ForgetPassword(string email)
+        {
+            try
+            {
+                var existingEmail = this.fundooContext.UserTable.Where(E => E.Email == email).FirstOrDefault();
+                if (existingEmail != null)
+                {
+                    var token = GenerateSecurityToken(existingEmail.Email, existingEmail.Id);
+                    new MsmqModel().Sender(token);
+                    return token;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
         }
     }
 }
